@@ -79,7 +79,6 @@ end entity;
 
 architecture Behavioral of mii_gmii_io is
 	signal clock_tx         : std_ulogic := '0';
-	signal clock_tx_inv     : std_ulogic := '1';
 	signal clock_rx         : std_ulogic := '0';
 begin
 	-- set tx-clock: switch between 125 Mhz reference clock and MII_TX_CLK for TX process
@@ -91,12 +90,11 @@ begin
 		
 	-- output 1000Mbps-clock only when running GMII to reduce switching noise
 	with speed_select_i select gmii_gtx_clk_o <=
-		clock_tx_inv when SPEED_1000MBPS,
+		clock_tx when SPEED_1000MBPS,
 		'0' when others;
 
 	-- output rx/tx-clocks
-	clock_tx_o   <= clock_tx;
-	clock_tx_inv <= not clock_tx;
+	clock_tx_o <= clock_tx;
 	clock_rx_o <= clock_rx;
 
 	process (clock_tx)
