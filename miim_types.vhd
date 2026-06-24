@@ -11,7 +11,7 @@ use ieee.numeric_std.all;
 
 package miim_types is
 	subtype t_register_address is unsigned(4 downto 0);
-	subtype t_phy_address is unsigned(4 downto 0);
+	subtype t_phy_address is std_ulogic_vector(4 downto 0);
 	subtype t_data is std_ulogic_vector(15 downto 0);
 
 	function to_register_address(c : natural) return t_register_address;
