@@ -17,15 +17,12 @@ entity ethernet_rmii is
 		MIIM_RESET_WAIT_TICKS : natural       := 0;
 		MIIM_POLL_WAIT_TICKS  : natural       := DEFAULT_POLL_WAIT_TICKS;
 		MIIM_CLOCK_DIVIDER    : positive      := 50;
-		-- You need to supply the current speed via speed_override when MIIM is disabled
 		MIIM_DISABLE          : boolean       := FALSE
 	);
 	port(
 		-- Reset input synchronous to miim_clock_i
 		reset_i            : in    std_ulogic;
 		-- Asynchronous reset output
-		-- Reset may be asserted when the speed changes to get the system
-		-- back to a defined state (glitches might occur on the clock)
 		reset_o            : out   std_ulogic;
 
 		-- MAC address of this station
@@ -47,9 +44,6 @@ entity ethernet_rmii is
 		mdio_io            : inout std_ulogic;
 		-- Status, synchronous to miim_clock_i
 		link_up_o          : out   std_ulogic;
-		speed_o            : out   t_ethernet_speed;
-		-- Also synchronous to miim_clock_i if used!
-		speed_override_i   : in    t_ethernet_speed := SPEED_UNSPECIFIED;
 
 		-- TX from client logic
 		tx_clock_o         : out   std_ulogic;
@@ -115,14 +109,11 @@ begin
 	rx_clock_o <= rx_clock;
 
 	link_up_o            <= link_up;
-	speed_o              <= speed;
 	miim_phy_address_sig <= MIIM_PHY_ADDRESS;
 	-- Errors are never transmitted in full-duplex mode
 	rmii_tx_er_o         <= '0';
 
-	with speed_override_i select speed <=
-		miim_speed when SPEED_UNSPECIFIED,
-		speed_override_i when others;
+	speed <= SPEED_100MBPS; -- set to fixed 100MBit for RMII mode
 
 	-- Generate MAC reset if necessary
 	reset_generator_inst : entity work.reset_generator
