@@ -6,6 +6,8 @@ The core fully works on Xilinx Spartan 6 family FPGAs only at the moment. It was
 
 The user interface is comprised of two FIFOs with a 8-bit data bus for packet transmission and reception, respectively.
 
+Without FIFO the core is tested on Altera Cyclone III and Lattice ECP5 FPGAs.
+
 This page is a short overview of the features and usage of the MAC. More information on the design and implementation can be found in the design document at <https://github.com/yol/ethernet_mac_doc/raw/master/Thesis.pdf>.
 
 Features
@@ -19,7 +21,9 @@ Finished:
  - Filtering received packets by destination MAC address
  - MAC address insertion into source address of outgoing packets (only when the first source address byte in the packet stream is `0xFF`)
  - **Simple 8 bit wide FIFO user interface** with arbitrary clock domains for packet transmission and reception
- - **Media-independent interface (MII)** for 10/100 Mb/s and **gigabit media-independent interface (GMII)** connectivity
+ - **Media-independent interface (MII)** for 10/100 Mb/s
+ - **Reduced-Media-independent interface (RMII)** for 100 Mb/s
+ - **Gigabit-Media-independent interface (GMII)** for 1000 Mb/s
 	 - MII/GMII hardware I/O setup for Xilinx Spartan 6 family FPGAs
  - Basic **media-independent interface management (MIIM) interface support** that:
 	 - Configures the PHY auto-negotiation to use full-duplex modes only
