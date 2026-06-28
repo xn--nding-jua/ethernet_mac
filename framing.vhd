@@ -145,8 +145,21 @@ begin
 						when TX_IDLE =>
 							-- Handled above, cannot happen here
 							null;
-						when TX_PREAMBLE2 | TX_PREAMBLE3 | TX_PREAMBLE4 | TX_PREAMBLE5 | TX_PREAMBLE6 =>
-							tx_state <= t_tx_state'succ(tx_state);
+						when TX_PREAMBLE2 =>
+							--tx_state <= t_tx_state'succ(tx_state); -- Xilinx ISE14.7 does not synthesize this line
+							tx_state <= TX_PREAMBLE3;
+							data_out := PREAMBLE_DATA;
+						when TX_PREAMBLE3 =>
+							tx_state <= TX_PREAMBLE4;
+							data_out := PREAMBLE_DATA;
+						when TX_PREAMBLE4 =>
+							tx_state <= TX_PREAMBLE5;
+							data_out := PREAMBLE_DATA;
+						when TX_PREAMBLE5 =>
+							tx_state <= TX_PREAMBLE6;
+							data_out := PREAMBLE_DATA;
+						when TX_PREAMBLE6 =>
+							tx_state <= TX_PREAMBLE7;
 							data_out := PREAMBLE_DATA;
 						when TX_PREAMBLE7 =>
 							tx_state <= TX_START_FRAME_DELIMITER;
@@ -225,10 +238,12 @@ begin
 								update_fcs := FALSE;
 							end if;
 						when TX_FRAME_CHECK_SEQUENCE2 =>
-							tx_state <= t_tx_state'succ(tx_state);
+							--tx_state <= t_tx_state'succ(tx_state); -- ISE14.7 does not synthesize this
+							tx_state <= TX_FRAME_CHECK_SEQUENCE3;
 							data_out := fcs_output_byte(tx_frame_check_sequence, 1);
 						when TX_FRAME_CHECK_SEQUENCE3 =>
-							tx_state <= t_tx_state'succ(tx_state);
+							--tx_state <= t_tx_state'succ(tx_state);  -- ISE14.7 does not synthesize this
+							tx_state <= TX_FRAME_CHECK_SEQUENCE4;
 							data_out := fcs_output_byte(tx_frame_check_sequence, 2);
 						when TX_FRAME_CHECK_SEQUENCE4 =>
 							tx_state                   <= TX_INTERPACKET_GAP;
